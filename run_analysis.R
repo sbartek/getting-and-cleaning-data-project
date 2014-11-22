@@ -57,7 +57,7 @@ tidyData <- rbind(tidyData,tidyData2)
 
 # This writes them into 'tidyData.txt' file
 # It will take a while:
-write.table(tidyData, file = "data/tidyData.txt")
+write.table(tidyData, file = " data/tidyData.txt")
 
 #Creates a second, independent tidy data set with the average of each
 #variable for each activity and each subject.
