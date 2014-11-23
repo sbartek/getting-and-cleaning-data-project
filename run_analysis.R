@@ -69,7 +69,10 @@ tidyData2 <- aggregate(
     FUN="mean")
 write.table(tidyData, file = "data/tidyData2.txt")
 
-###
+#
+# This is extra. It creates description of variables in markdown format. 
+#
+
 
 lines <- c("**subject**",
            "Identifier of a volunteer. There are 30 volunteers within an age bracket of 19-48 year", " ")
@@ -126,7 +129,6 @@ desc <- function(feat) {
     line <- paste0(line, ".")
     line
 }
-desc("abcmeanAccBodyMag")
 
 for (feat in msFeats) {
     lines <- c(lines, paste0("**", feat, "**"), desc(feat), " ")
