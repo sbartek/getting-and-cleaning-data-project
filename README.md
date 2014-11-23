@@ -69,5 +69,8 @@ Then we merge data into one table and save them into `data/tidyData.txt` file.
 ## Second tidy set ##
 
 Creates a second, independent tidy data set with the average of each
-variable for each activity and each subject.
+variable for each activity and each subject and save them into `data/tidyData.txt`
 
+## Columns description ##
+
+Creates file `data/variables.md` with description of variables.

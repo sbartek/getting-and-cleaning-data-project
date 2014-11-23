@@ -52,9 +52,13 @@ colnames(tidyDataTe) <- c("subject","activity",msFeats)
 # Merges the training and the test sets to create one data set.
 tidyData <- rbind(tidyData,tidyDataTe)
 
+#We change subject into factor
+tidyData[,1] <- as.factor(tidyData[,1])
+
+
 # This writes them into 'tidyData.txt' file
 # It will take a while:
-write.table(tidyData, file = " data/tidyData.txt")
+write.table(tidyData, file = "data/tidyData.txt")
 
 #Creates a second, independent tidy data set with the average of each
 #variable for each activity and each subject and saves in 'tidyData2.txt'
@@ -63,6 +67,75 @@ tidyData2 <- aggregate(
     x =  tidyData[,msFeats],
     by=list(subject=tidyData[,"subject"], activity=tidyData[,"activity"]),
     FUN="mean")
-write.table(tidyData, file = " data/tidyData2.txt")
+write.table(tidyData, file = "data/tidyData2.txt")
+
+###
+
+lines <- c("**subject**",
+           "Identifier of a volunteer. There are 30 volunteers within an age bracket of 19-48 year", " ")
+
+lines <- c(lines, "**activity**",
+           "One of six activities: WALKING, WALKINGUPSTAIRS, WALKINGDOWNSTAIRS, SITTING, STANDING, LAYING", " ")
+
+desc <- function(feat) {
+    line <- ""
+    mms <- regexpr("mean|std", feat, perl=TRUE)
+    ms <- regmatches(feat, mms)
+    if (ms=='mean') {
+        line <- paste0(line,"Mean of")
+    } else {
+        line <- paste0(line,"Standard deviation of")
+    }
+    mm <- regexpr("Mag", feat, perl=TRUE)
+    if (mm[1]!= -1) {
+        line <- paste(line,"the magnitude of")
+    } 
+    mtf <- regexpr("^.", feat, perl=TRUE)
+    tf <- regmatches(feat, mtf)
+    if (tf=='t') {
+        line <- paste(line,"time domain")
+    } else {
+        line <- paste(line, "Fast Fourier Transform (FFT) of")
+    }
+    mj <- regexpr("Jerk", feat, perl=TRUE)
+    if (mj[1]!= -1) {
+        line <- paste(line,"Jerk signals")
+    } else {
+        line <- paste(line,"signals")
+    }
+        
+    mag <- regexpr("Acc|Gyro", feat, perl=TRUE)
+    ag <- regmatches(feat, mag)
+    if (ag=='Acc') {
+        line <- paste(line,"from accelerometer")
+        mbg <- regexpr(c("Body|Gravity"), feat, perl=TRUE)
+        bg <- regmatches(feat, mbg)
+        if (bg=='Gravity') {
+            line <- paste(line,"in standard gravity units")
+        } else {
+            line <- paste(line, "subtracting the gravity")
+        }
+    } else {
+        line <- paste(line, "from gyroscope")
+    }
+    md <- regexpr(c("[XYZ]$"), feat, perl=TRUE)
+    d <- regmatches(feat, md)
+    if (md!=-1) {
+        line <- paste(line, "in ", d, "direction")
+    } 
+    line <- paste0(line, ".")
+    line
+}
+desc("abcmeanAccBodyMag")
+
+for (feat in msFeats) {
+    lines <- c(lines, paste0("**", feat, "**"), desc(feat), " ")
+}
+
+fileConn<-file("data/variables.md")
+
+writeLines(lines, fileConn)
+close(fileConn)
+
 
 
