@@ -1,6 +1,3 @@
-#data.table ???
-#library(data.table)
-
 #Downloads zip archive and unzip it into data folder
 if (!file.exists("data")) dir.create("data")
 zipURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
@@ -49,21 +46,23 @@ xTePath <- paste(dataDir, '/test/X_test.txt',sep="")
 # This will take a while:
 xTe <- read.table(xTePath)[,msInds]
 
-tidyData2 <- cbind(subTe,yTe,xTe)
-colnames(tidyData2) <- c("subject","activity",msFeats)
+tidyDataTe <- cbind(subTe,yTe,xTe)
+colnames(tidyDataTe) <- c("subject","activity",msFeats)
 
 # Merges the training and the test sets to create one data set.
-tidyData <- rbind(tidyData,tidyData2)
+tidyData <- rbind(tidyData,tidyDataTe)
 
 # This writes them into 'tidyData.txt' file
 # It will take a while:
 write.table(tidyData, file = " data/tidyData.txt")
 
 #Creates a second, independent tidy data set with the average of each
-#variable for each activity and each subject.
+#variable for each activity and each subject and saves in 'tidyData2.txt'
 
-tidyData3 <- aggregate(
+tidyData2 <- aggregate(
     x =  tidyData[,msFeats],
     by=list(subject=tidyData[,"subject"], activity=tidyData[,"activity"]),
     FUN="mean")
-head(tidyData3[,c(1,2)])
+write.table(tidyData, file = " data/tidyData2.txt")
+
+
